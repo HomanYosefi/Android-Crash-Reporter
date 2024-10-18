@@ -1,58 +1,90 @@
 package com.example.leitner.ui.theme
 
-import android.app.Activity
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+
+
+// Light theme colors
+private val LightColors = lightColorScheme(
+    primary = AnkiBlue,
+    onPrimary = Color.White,
+    primaryContainer = AnkiLightBlue,
+    onPrimaryContainer = AnkiBlack,
+    secondary = Color(0xFFFAF0E6),
+    onSecondary = Color(0xFFFAF0E6),
+    secondaryContainer = Color(0xFFFAF0E6),
+    onSecondaryContainer = AnkiBlack,
+    background = Color.White,
+    onBackground = AnkiBlack,
+    surface = Color.White,
+    onSurface = AnkiBlack,
+    error = AnkiRed,
+    onError = Color.White
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+// Dark theme colors
+private val DarkColors = darkColorScheme(
+    primary = AnkiLightBlue,
+    onPrimary = AnkiBlack,
+    primaryContainer = AnkiBlue,
+    onPrimaryContainer = Color.White,
+    secondary = AnkiGrey,
+    onSecondary = AnkiBlack,
+    secondaryContainer = AnkiGrey,
+    onSecondaryContainer = Color.White,
+    background = AnkiBlack,
+    onBackground = Color.White,
+    surface = AnkiBlack,
+    onSurface = Color.White,
+    error = AnkiRed,
+    onError = AnkiBlack
+)
 
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+// تعریف تایپوگرافی
+private val AppTypography = Typography(
+    bodyLarge = TextStyle(
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        letterSpacing = 0.5.sp
+    ),
+    labelLarge = TextStyle(
+        fontWeight = FontWeight.Bold,
+        fontSize = 14.sp,
+        letterSpacing = 1.25.sp
+    ),
+    bodySmall = TextStyle(
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp,
+        letterSpacing = 0.4.sp
+    ),
+    titleLarge = TextStyle(
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp,
+        letterSpacing = 0.sp
+    ),
+    labelMedium = TextStyle(
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 12.sp,
+        letterSpacing = 0.5.sp
+    )
 )
 
 @Composable
 fun LeitnerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
+    val colors = if (darkTheme) DarkColors else LightColors
 
     MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
+        colorScheme = colors,
+        typography = AppTypography,
         content = content
     )
 }
