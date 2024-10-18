@@ -13,6 +13,7 @@ android {
     defaultConfig {
         applicationId = "com.example.leitner"
         minSdk = 24
+        //noinspection OldTargetApi
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -43,7 +44,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.3"
+        kotlinCompilerExtensionVersion = "1.5.8"
     }
 
     packaging {
@@ -54,13 +55,12 @@ android {
 }
 
 dependencies {
-    //noinspection UseTomlInstead
-    implementation(libs.androidx.navigation.compose)
-    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("androidx.navigation:navigation-compose:2.7.1")
+    implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.activity:activity-compose:1.9.3")
-    implementation(platform("androidx.compose:compose-bom:2024.10.00"))
+    implementation(platform("androidx.compose:compose-bom:2024.02.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
@@ -68,29 +68,27 @@ dependencies {
     implementation("androidx.compose.foundation:foundation-layout-android:1.7.4")
     implementation("androidx.compose.ui:ui-android:1.7.4")
     implementation("com.android.volley:volley:1.2.1")
-    implementation(libs.androidx.material3.android)
-    implementation(libs.androidx.material3.jvmstubs)
+    implementation("androidx.compose.material3:material3")
     testImplementation("junit:junit:4.13.2")
-    androidTestImplementation(libs.androidx.junit.v115)
-    androidTestImplementation(libs.androidx.espresso.core.v351)
-    androidTestImplementation(platform(libs.compose.bom.v20230300))
-    androidTestImplementation(libs.ui.test.junit4)
-    debugImplementation(libs.ui.tooling)
-    debugImplementation(libs.ui.test.manifest)
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-tooling")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation(kotlin("reflect"))
 
     // Dagger Hilt
-    implementation(libs.hilt.android)
-    kapt(libs.hilt.android.compiler)
+    implementation("com.google.dagger:hilt-android:2.50")
+    kapt("com.google.dagger:hilt-android-compiler:2.50")
 
     // Hilt Navigation Compose
-    implementation(libs.androidx.hilt.navigation.compose)
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
 
     // Retrofit & OkHttp
-    implementation(libs.retrofit)
-    implementation(libs.okhttp)
-    implementation(libs.converter.moshi)
-    implementation(libs.logging.interceptor)
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
 
     // Moshi
     kapt("com.squareup.moshi:moshi-kotlin-codegen:1.14.0")
@@ -102,5 +100,5 @@ dependencies {
     kapt("androidx.room:room-compiler:2.6.1")
 
     // Coil for image loading
-    implementation(libs.coil.compose)
+    implementation("io.coil-kt:coil-compose:2.4.0")
 }

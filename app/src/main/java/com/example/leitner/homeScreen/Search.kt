@@ -38,7 +38,12 @@ fun Search() {
             placeholder = { Text("Search grammar") },
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
             trailingIcon = {
-                HambergeryEdit(onClick = { expanded = false })
+                //HambergeryEdit(onClick = { expanded = false })
+                CustomDropdownMenu(
+                    onEditClick = { /* Handle edit click */ },
+                    onSettingsClick = { /* Handle settings click */ },
+                    onFeedbackClick = { /* Handle feedback click */ }
+                )
             },
             active = expanded,
             onActiveChange = { expanded = it },
