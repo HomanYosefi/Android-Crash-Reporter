@@ -1,116 +1,138 @@
-//package com.example.leitner.GrammarScreen
-//
-//
-//import android.content.Context
-//import android.view.accessibility.AccessibilityManager
-//import androidx.compose.foundation.layout.Arrangement
-//import androidx.compose.foundation.layout.PaddingValues
-//import androidx.compose.foundation.layout.fillMaxWidth
-//import androidx.compose.foundation.layout.offset
-//import androidx.compose.foundation.layout.padding
-//import androidx.compose.foundation.layout.width
-//import androidx.compose.foundation.lazy.LazyColumn
-//import androidx.compose.material.icons.Icons
-//import androidx.compose.material.icons.automirrored.filled.ArrowBack
-//import androidx.compose.material.icons.automirrored.filled.ArrowForward
-//import androidx.compose.material.icons.filled.Add
-//import androidx.compose.material.icons.filled.Check
-//import androidx.compose.material.icons.filled.Edit
-//import androidx.compose.material.icons.filled.Favorite
-//import androidx.compose.material.icons.filled.Menu
-//import androidx.compose.material3.BottomAppBar
-//import androidx.compose.material3.BottomAppBarDefaults
-//import androidx.compose.material3.CenterAlignedTopAppBar
-//import androidx.compose.material3.ExperimentalMaterial3Api
-//import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-//import androidx.compose.material3.FabPosition
-//import androidx.compose.material3.FilledIconButton
-//import androidx.compose.material3.FloatingActionButton
-//import androidx.compose.material3.FloatingActionButtonDefaults
-//import androidx.compose.material3.Icon
-//import androidx.compose.material3.IconButton
-//import androidx.compose.material3.LargeTopAppBar
-//import androidx.compose.material3.MaterialTheme
-//import androidx.compose.material3.MediumTopAppBar
-//import androidx.compose.material3.Scaffold
-//import androidx.compose.material3.Text
-//import androidx.compose.material3.TopAppBar
-//import androidx.compose.material3.TopAppBarDefaults
-//import androidx.compose.material3.TopAppBarTitleAlignment
-//import androidx.compose.runtime.Composable
-//import androidx.compose.runtime.remember
-//import androidx.compose.ui.Modifier
-//import androidx.compose.ui.input.nestedscroll.nestedScroll
-//import androidx.compose.ui.platform.LocalContext
-//import androidx.compose.ui.text.style.TextOverflow
-//import androidx.compose.ui.tooling.preview.Preview
-//import androidx.compose.ui.unit.dp
-//
-//
-///**
-// * A sample for a vibrant [BottomAppBar] that collapses when the content is scrolled up, and appears
-// * when the content scrolled down. The content arrangement is fixed.
-// */
-//@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
-//@Preview
-//@Composable
-//fun ExitAlwaysBottomAppBarFixedVibrant() {
-//    val context = LocalContext.current
-//    val isTouchExplorationEnabled = remember {
-//        val am = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
-//        am.isEnabled && am.isTouchExplorationEnabled
-//    }
-//    val scrollBehavior = BottomAppBarDefaults.exitAlwaysScrollBehavior()
-//    Scaffold(
-//        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
-//        bottomBar = {
-//            BottomAppBar(
-//                horizontalArrangement = BottomAppBarDefaults.HorizontalArrangement,
-//                scrollBehavior = if (!isTouchExplorationEnabled) scrollBehavior else null,
-//                containerColor =
-//                MaterialTheme.colorScheme.primaryContainer, // TODO(b/356885344): tokens
-//                content = {
-//                    IconButton(onClick = { /* doSomething() */ }) {
-//                        Icon(
-//                            Icons.AutoMirrored.Filled.ArrowBack,
-//                            contentDescription = "Localized description"
-//                        )
-//                    }
-//                    IconButton(onClick = { /* doSomething() */ }) {
-//                        Icon(
-//                            Icons.AutoMirrored.Filled.ArrowForward,
-//                            contentDescription = "Localized description"
-//                        )
-//                    }
-//                    FilledIconButton(
-//                        modifier = Modifier.width(56.dp),
-//                        onClick = { /* doSomething() */ }
-//                    ) {
-//                        Icon(Icons.Filled.Add, contentDescription = "Localized description")
-//                    }
-//                    IconButton(onClick = { /* doSomething() */ }) {
-//                        Icon(Icons.Filled.Check, contentDescription = "Localized description")
-//                    }
-//                    IconButton(onClick = { /* doSomething() */ }) {
-//                        Icon(Icons.Filled.Edit, contentDescription = "Localized description")
-//                    }
-//                }
-//            )
-//        },
-//        content = { innerPadding ->
-//            LazyColumn(
-//                contentPadding = innerPadding,
-//                verticalArrangement = Arrangement.spacedBy(8.dp)
-//            ) {
-//                val list = (0..75).map { it.toString() }
-//                items(count = list.size) {
-//                    Text(
-//                        text = list[it],
-//                        style = MaterialTheme.typography.bodyLarge,
-//                        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-//                    )
-//                }
-//            }
-//        }
-//    )
-//}
+package com.example.leitner.GrammarScreen
+
+import android.content.Context
+import android.view.accessibility.AccessibilityManager
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
+import androidx.compose.ui.graphics.Color
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun GrammarScreen(
+    onAddClick: () -> Unit = {},
+    modifier: Modifier = Modifier,
+    paddingValues: Dp,
+    scope: CoroutineScope,
+    scaffoldState: BottomSheetScaffoldState
+) {
+    val context = LocalContext.current
+    val isTouchExplorationEnabled = remember {
+        val am = context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager
+        am.isEnabled && am.isTouchExplorationEnabled
+    }
+
+    val scrollBehavior = BottomAppBarDefaults.exitAlwaysScrollBehavior()
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+
+    val showScrollToTop by remember {
+        derivedStateOf { listState.firstVisibleItemIndex > 0 }
+    }
+
+    Box(
+        modifier = modifier
+            .padding(bottom = paddingValues)
+    ) {
+
+        Scaffold(
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+            bottomBar = {
+                BottomAppBar(
+                    actions = {
+                        if (showScrollToTop) {
+                            FilledIconButton(
+                                onClick = {
+                                    coroutineScope.launch {
+                                        listState.animateScrollToItem(0)
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    Icons.Default.KeyboardArrowUp,
+                                    contentDescription = "Scroll to top"
+                                )
+                            }
+                        }
+                    },
+                    floatingActionButton = {
+                        FloatingActionButton(
+                            onClick = {
+                                //AddGrammarPage(scope.launch { scaffoldState.bottomSheetState.partialExpand() }, scaffoldState)
+                                BottomSheetScaffold(
+                                    scaffoldState = scaffoldState,
+                                    sheetPeekHeight = 128.dp,
+                                    sheetContent = {
+                                        Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                                            Box(Modifier.fillMaxWidth().height(128.dp), contentAlignment = Alignment.Center) {
+                                                Text("Swipe up to expand sheet")
+                                            }
+                                            Text("Sheet content")
+                                            Button(
+                                                modifier = Modifier.padding(bottom = 64.dp),
+                                                onClick = { Job }
+                                            ) {
+                                                Text("Click to collapse sheet")
+                                            }
+                                        }
+                                    }
+                                ) { innerPadding ->
+                                    Box(
+                                        modifier = Modifier.fillMaxSize().padding(innerPadding),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text("Scaffold Content")
+                                    }
+                                }
+
+                            },
+                            containerColor = MaterialTheme.colorScheme.secondary,
+                            // modifier = Modifier.padding(10.dp)
+                        ) {
+                            Icon(
+                                Icons.Filled.Add,
+                                contentDescription = "Add item",
+                                tint = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    },
+                    scrollBehavior = if (!isTouchExplorationEnabled) scrollBehavior else null,
+                    containerColor = Color.Transparent,
+                    //modifier = Modifier.height(110.dp)
+                )
+            }
+        ) { innerPadding ->
+            LazyColumn(
+                state = listState,
+                contentPadding = innerPadding,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                val list = (0..75).map { it.toString() }
+                items(count = list.size) {
+                    Text(
+                        text = list[it],
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                    )
+                }
+            }
+        }
+    }
+}
