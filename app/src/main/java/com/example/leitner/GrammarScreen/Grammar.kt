@@ -7,20 +7,34 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import androidx.compose.runtime.*
+
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
-@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun Grammar(navController: NavHostController) {
+fun Grammar(
+    navController: NavHostController,
+    viewModel: GrammarViewModel = hiltViewModel()
+) {
     val scope = rememberCoroutineScope()
-    val scaffoldState = rememberBottomSheetScaffoldState()
+    val uiState by viewModel.uiState.collectAsState()
 
     GrammarScreen(
-        onAddClick = {
+        state = uiState,
+        onEditModeToggle = viewModel::toggleEditMode,
+        onDragStart = viewModel::updateDraggedItem,
+        onDragEnd = { fromIndex, toIndex ->
+            viewModel.moveItem(fromIndex, toIndex)
         },
+        onBottomSheetToggle = viewModel::toggleBottomSheet,
+        onTabChange = viewModel::updateTabIndex,
+        onTextFieldChange = viewModel::updateTextField,
         modifier = Modifier,
-        paddingValues = 70.dp,
-        scope,scaffoldState
+        paddingValues = 70.dp
     )
 }
+
