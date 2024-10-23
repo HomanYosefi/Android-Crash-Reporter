@@ -164,10 +164,11 @@ fun ListDetailGrammarScreen(
                         .padding(innerPadding)
                         .padding(16.dp)
                 ) {
-                    Text(
-                        text = "سلام",
-                        style = MaterialTheme.typography.headlineLarge
-                    )
+//                    Text(
+//                        text = "سلام",
+//                        style = MaterialTheme.typography.headlineLarge
+//                    )
+                    FlashCardScreen()
                 }
             }
         }
