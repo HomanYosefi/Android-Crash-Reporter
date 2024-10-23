@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -59,7 +60,8 @@ fun GrammarScreen(
     onTabChange: (Int) -> Unit,
     onTextFieldChange: (String) -> Unit,
     modifier: Modifier = Modifier,
-    paddingValues: Dp
+    paddingValues: Dp,
+    navController: NavHostController
 ) {
     val listState = rememberLazyListState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -86,7 +88,8 @@ fun GrammarScreen(
                 onDragStart = onDragStart,
                 onDragEnd = onDragEnd,
                 listState = listState,  // پاس دادن listState به ChaptersList
-                modifier = Modifier.padding(innerPadding)
+                modifier = Modifier.padding(innerPadding),
+                navController = navController
             )
         }
 
@@ -260,7 +263,8 @@ private fun ChaptersList(
     onDragStart: (Int?) -> Unit,
     onDragEnd: (Int, Int) -> Unit,
     listState: LazyListState,  // اضافه کردن پارامتر listState
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navController: NavHostController
 ) {
     val targetIndex = remember { mutableStateOf<Int?>(null) }
 
@@ -292,7 +296,8 @@ private fun ChaptersList(
                         onDragEnd(index, targetIndex.value!!)
                     }
                     targetIndex.value = null
-                }
+                },
+                navController = navController
             )
         }
     }

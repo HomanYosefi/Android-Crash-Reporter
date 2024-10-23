@@ -6,9 +6,12 @@ import android.annotation.SuppressLint
 import androidx.annotation.StringRes
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.leitner.GrammarScreen.Grammar
+import com.example.leitner.GrammarScreen.ListDetailGrammarScreen
 import com.example.leitner.homeScreen.Home
 
 
@@ -38,14 +41,25 @@ fun NavigationGraph(navController: NavHostController) {
         composable(BottomNavItem.setting.screen_route) {
             Setting(navController)
         }
-//        composable("notification") {
-//            notification(navController)
-//        }
+        composable(
+            route = "listDetailGrammar/{chapterTitle}",
+            arguments = listOf(
+                navArgument("chapterTitle") { type = NavType.StringType }
+            )
+        ) { backStackEntry ->
+            val chapterTitle = backStackEntry.arguments?.getString("chapterTitle") ?: ""
+            ListDetailGrammarScreen(
+                navController = navController,
+                chapterTitle = chapterTitle
+            )
+        }
     }
 }
 
 
-
+fun NavHostController.navigateToGrammarDetail(chapterTitle: String) {
+    this.navigate("listDetailGrammar/$chapterTitle")
+}
 
 
 

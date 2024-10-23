@@ -34,7 +34,8 @@ fun Grammar(
         onTabChange = viewModel::updateTabIndex,
         onTextFieldChange = viewModel::updateTextField,
         modifier = Modifier,
-        paddingValues = 70.dp
+        paddingValues = 70.dp,
+        navController = navController
     )
 }
 
