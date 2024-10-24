@@ -14,14 +14,25 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.example.leitner.R
 
 data class WordItem(
     val id: Int,
-    val title: String
+    val englishWord: String,
+    val farsiWord: String
+
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -35,24 +46,26 @@ fun ListDetailGrammarScreen(
 
     val words = remember {
         listOf(
-            WordItem(1, "کلمه اول"),
-            WordItem(2, "کلمه دوم"),
-            WordItem(3, "کلمه سوم"),
-            WordItem(1, "کلمه اول"),
-            WordItem(2, "کلمه دوم"),
-            WordItem(3, "کلمه سوم"),
-            WordItem(1, "کلمه اول"),
-            WordItem(2, "کلمه دوم"),
-            WordItem(3, "کلمه سوم"),
-            WordItem(1, "کلمه اول"),
-            WordItem(2, "کلمه دوم"),
-            WordItem(3, "کلمه سوم"),
-            WordItem(1, "کلمه اول"),
-            WordItem(2, "کلمه دوم"),
-            WordItem(3, "کلمه سوم"),
-            WordItem(1, "کلمه اول"),
-            WordItem(2, "کلمه دوم"),
-            WordItem(3, "کلمه سوم")
+            WordItem(1, "lorem episom", "لورم اپیسوم"),
+            WordItem(1, "lorem episom", "لورم اپیسوم"),
+            WordItem(1, "lorem episom", "لورم اپیسوم"),
+            WordItem(1, "lorem episom", "لورم اپیسوم"),
+            WordItem(1, "lorem episom", "لورم اپیسوم"),
+            WordItem(1, "lorem episom", "لورم اپیسوم"),
+            WordItem(1, "lorem episom", "لورم اپیسوم"),
+            WordItem(1, "lorem episom", "لورم اپیسوم"),
+            WordItem(1, "lorem episom", "لورم اپیسوم"),
+            WordItem(1, "lorem episom", "لورم اپیسوم"),
+            WordItem(1, "lorem episom", "لورم اپیسوم"),
+            WordItem(1, "lorem episom", "لورم اپیسوم"),
+            WordItem(1, "lorem episom", "لورم اپیسوم"),
+            WordItem(1, "lorem episom", "لورم اپیسوم"),
+            WordItem(1, "lorem episom", "لورم اپیسوم"),
+            WordItem(1, "lorem episom", "لورم اپیسوم"),
+            WordItem(1, "lorem episom", "لورم اپیسوم"),
+            WordItem(1, "lorem episom", "لورم اپیسوم")
+
+
         )
     }
 
@@ -61,13 +74,30 @@ fun ListDetailGrammarScreen(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
                 TopAppBar(
-                    title = { Text(chapterTitle) },
+                    title = { /*Text(chapterTitle)*/ },
                     navigationIcon = {
-                        IconButton(onClick = { navController.navigateUp() }) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "برگشت"
-                            )
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            IconButton(onClick = { navController.navigateUp() }) {
+                                Icon(
+                                    imageVector = Icons.Default.ArrowBack,
+                                    contentDescription = "برگشت"
+                                )
+                            }
+                            Spacer(modifier = Modifier.weight(1f))
+                            IconButton(onClick = { }) {
+                                Icon(
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = "search"
+                                )
+                            }
+                            IconButton(onClick = { }) {
+                                Icon(
+                                    imageVector = Icons.Default.Share,
+                                    contentDescription = "share"
+                                )
+                            }
                         }
                     },
                     scrollBehavior = scrollBehavior,
@@ -84,6 +114,19 @@ fun ListDetailGrammarScreen(
                     .padding(paddingValues)
                     .padding(16.dp)
             ) {
+                Text(
+                    text = chapterTitle,
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(16.dp, bottom = 0.dp)
+                )
+
+                Text(
+                    text = "Cards for today",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Normal,
+                    modifier = Modifier.padding(16.dp)
+                )
                 Row(
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -91,30 +134,54 @@ fun ListDetailGrammarScreen(
                     CustomCircularProgress(targetProgress = 0.75f, displayNumber = 42)
                     Spacer(modifier = Modifier.weight(1f))
                 }
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 120.dp) // حداقل ارتفاع باکس
+                        .padding(vertical = 16.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(Color.Gray),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        StatusColumn(
+                            count = "0",
+                            label = "To review",
+                            iconTint = Color.Green
+                        )
+
+                        StatusColumn(
+                            count = "10",
+                            label = "Not Studied",
+                            iconTint = Color.Unspecified
+                        )
+                    }
+                }
 
                 Button(
                     onClick = { showDetail = true },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp)
+                        .padding(vertical = 16.dp)
+                        .height(80.dp)
+                        .clip(RoundedCornerShape(10.dp))
                 ) {
-                    Text("Study cards")
+                    Text(
+                        text = "Study cards",
+                        fontSize = 25.sp,
+                        fontWeight = FontWeight.Normal
+                    )
                 }
 
                 LazyColumn {
                     items(words) { word ->
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-                        ) {
-                            Text(
-                                text = word.title,
-                                modifier = Modifier.padding(16.dp),
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                        }
+                        FlashCardScreen(word.englishWord, word.farsiWord)
                     }
                 }
             }
@@ -168,7 +235,7 @@ fun ListDetailGrammarScreen(
 //                        text = "سلام",
 //                        style = MaterialTheme.typography.headlineLarge
 //                    )
-                    FlashCardScreen()
+                    FlashCardScreen("hello", "سلام")
                 }
             }
         }
@@ -203,14 +270,14 @@ fun CustomCircularProgress(
 
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier.size(100.dp)
+        modifier = modifier.size(130.dp)
     ) {
         CircularProgressIndicator(
             progress = progress, // مقدار انیمیشن شده
             modifier = Modifier.fillMaxSize(),
             trackColor = trackColor,
             color = color,
-            strokeWidth = 8.dp
+            strokeWidth = 12.dp
         )
 
         // نمایش عدد در مرکز دایره
@@ -221,5 +288,42 @@ fun CustomCircularProgress(
                 color = textColor
             )
         )
+    }
+}
+
+
+
+@Composable
+private fun StatusColumn(
+    count: String,
+    label: String,
+    iconTint: Color
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = count,
+                fontSize = 26.sp,
+                fontWeight = FontWeight.Normal
+            )
+            Icon(
+                painter = painterResource(R.drawable.cap),
+                contentDescription = "cap",
+                modifier = Modifier.size(40.dp),
+                tint = iconTint
+            )
+        }
+        Text(
+            text = label,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Normal
+        )
+
     }
 }

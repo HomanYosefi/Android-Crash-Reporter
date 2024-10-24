@@ -33,8 +33,8 @@ fun FlashCard(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp)
-            .height(300.dp)
+            .padding(bottom = 0.dp)
+            .height(100.dp)
             .background(Color.Transparent)
     ) {
         Card(
@@ -89,7 +89,10 @@ fun FlashCard(
 }
 
 @Composable
-fun FlashCardScreen() {
+fun FlashCardScreen(
+    frontText: String,
+    backText: String
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -99,16 +102,9 @@ fun FlashCardScreen() {
         verticalArrangement = Arrangement.Center
     ) {
         FlashCard(
-            frontText = "Hello",
-            backText = "سلام",
-            modifier = Modifier.fillMaxWidth(0.9f)
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text(
-            text = "برای مشاهده ترجمه کارت را لمس کنید",
-            style = MaterialTheme.typography.bodyMedium
+            frontText = frontText,
+            backText = backText,
+            modifier = Modifier.fillMaxWidth(0.95f)
         )
     }
 }
