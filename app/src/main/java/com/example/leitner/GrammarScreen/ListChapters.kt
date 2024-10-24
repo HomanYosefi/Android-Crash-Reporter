@@ -22,9 +22,12 @@ import androidx.navigation.NavHostController
 
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChapterItem(
     title: String,
+    wordsCount: Int = 20,
+    progress: Float = 0.65f,
     isEditMode: Boolean,
     isDragging: Boolean,
     onDragStart: () -> Unit,
@@ -34,73 +37,113 @@ fun ChapterItem(
 ) {
     var dragOffset by remember { mutableStateOf(Offset.Zero) }
 
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(
-                enabled = !isEditMode,
-                onClick = {
-                    navController.navigate("listDetailGrammar/$title") {
-                        launchSingleTop = true
-                        restoreState = true
+    Column {
+        ListItem(
+            modifier = Modifier
+                .clickable(
+                    enabled = !isEditMode,
+                    onClick = {
+                        navController.navigate("listDetailGrammar/$title") {
+                            launchSingleTop = true
+                            restoreState = true
+                        }
                     }
+                )
+                .then(
+                    if (isEditMode) {
+                        Modifier.pointerInput(Unit) {
+                            detectDragGestures(
+                                onDragStart = { onDragStart() },
+                                onDrag = { change, dragAmount ->
+                                    change.consume()
+                                    dragOffset += dragAmount
+                                    onDrag(dragOffset)
+                                },
+                                onDragEnd = {
+                                    dragOffset = Offset.Zero
+                                    onDragEnd()
+                                },
+                                onDragCancel = {
+                                    dragOffset = Offset.Zero
+                                    onDragEnd()
+                                }
+                            )
+                        }
+                    } else Modifier
+                ),
+            headlineContent = {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Medium
+                )
+            },
+            supportingContent = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = "$wordsCount words · ${(progress * 100).toInt()}% completed",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
                 }
-            )
-            .padding(16.dp)
-            .then(
+            },
+            leadingContent = {
                 if (isEditMode) {
-                    Modifier.pointerInput(Unit) {
-                        detectDragGestures(
-                            onDragStart = { onDragStart() },
-                            onDrag = { change, dragAmount ->
-                                change.consume()
-                                dragOffset += dragAmount
-                                onDrag(dragOffset)
-                            },
-                            onDragEnd = {
-                                dragOffset = Offset.Zero
-                                onDragEnd()
-                            },
-                            onDragCancel = {
-                                dragOffset = Offset.Zero
-                                onDragEnd()
-                            }
+                    Icon(
+                        imageVector = Icons.Default.Menu,
+                        contentDescription = "Drag handle",
+                        modifier = Modifier.size(24.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                } else {
+                    Box(
+                        modifier = Modifier
+                            .size(40.dp)
+                            .background(
+                                MaterialTheme.colorScheme.primaryContainer,
+                                CircleShape
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = title.take(1).uppercase(),
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            fontWeight = FontWeight.Medium
                         )
                     }
-                } else Modifier
-            )
-    ) {
-        Row(
+                }
+            },
+            trailingContent = {
+                if (isEditMode) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Edit chapter",
+                        modifier = Modifier.size(24.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                } else {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = com.example.leitner.R.drawable.cap),
+                            contentDescription = "Chapter status",
+                            modifier = Modifier.size(20.dp),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+            }
+        )
+        HorizontalDivider(
             modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            if (isEditMode) {
-                Icon(
-                    imageVector = Icons.Default.Menu,
-                    contentDescription = "",
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold
-            )
-            if (isEditMode) {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = "",
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-        }
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
+            thickness = 1.dp
+        )
     }
-
-    Divider(
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f),
-        thickness = 1.dp,
-        modifier = Modifier.fillMaxWidth()
-    )
 }
-

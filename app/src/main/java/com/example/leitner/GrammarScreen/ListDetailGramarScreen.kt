@@ -36,6 +36,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.unit.Dp
 import kotlin.Float
 
 data class WordItem(
@@ -84,7 +86,7 @@ fun ListDetailGrammarScreen(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
                 TopAppBar(
-                    title = { /*Text(chapterTitle)*/ },
+                    title = { },
                     navigationIcon = {
                         Row(
                             modifier = Modifier.fillMaxWidth()
@@ -118,88 +120,114 @@ fun ListDetailGrammarScreen(
                 )
             }
         ) { paddingValues ->
-            Column(
+            LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues)
-                    .padding(16.dp)
-            ) {
-                Text(
-                    text = chapterTitle,
-                    fontSize = 30.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(16.dp, bottom = 0.dp)
-                )
+                    .background(MaterialTheme.colorScheme.onSurfaceVariant)
 
-                Text(
-                    text = "Cards for today",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Normal,
-                    modifier = Modifier.padding(16.dp)
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Spacer(modifier = Modifier.weight(1f))
-                    CustomCircularProgress(targetProgress = 0.75f, displayNumber = 42)
-                    Spacer(modifier = Modifier.weight(1f))
-                }
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(min = 120.dp) // حداقل ارتفاع باکس
-                        .padding(vertical = 16.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(Color.Gray),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Row(
+                    .padding(paddingValues)
+            ) {
+                item {
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        verticalAlignment = Alignment.CenterVertically
+                            .clip(RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp))
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .padding(16.dp)
+
                     ) {
-                        StatusColumn(
-                            count = "0",
-                            label = "To review",
-                            iconTint = Color.Green
+                        Text(
+                            text = chapterTitle,
+                            fontSize = 30.sp,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(16.dp, bottom = 0.dp)
                         )
 
-                        StatusColumn(
-                            count = "10",
-                            label = "Not Studied",
-                            iconTint = Color.Unspecified
+                        Text(
+                            text = "Cards for today",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Normal,
+                            modifier = Modifier.padding(16.dp)
                         )
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Spacer(modifier = Modifier.weight(1f))
+                            CustomCircularProgress(targetProgress = 0.75f, displayNumber = 42)
+                            Spacer(modifier = Modifier.weight(1f))
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = 120.dp)
+                                .padding(vertical = 16.dp)
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(MaterialTheme.colorScheme.scrim),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp),
+                                horizontalArrangement = Arrangement.SpaceEvenly,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                StatusColumn(
+                                    count = "0",
+                                    label = "To review",
+                                    iconTint = Color.Green,
+                                    painterResource(R.drawable.cap),
+                                    40.dp
+                                )
+
+                                StatusColumn(
+                                    count = "10",
+                                    label = "Not Studied",
+                                    iconTint = MaterialTheme.colorScheme.onBackground,
+                                    painterResource(R.drawable.add),
+                                    25.dp
+                                )
+                            }
+                        }
+
+                        Button(
+                            onClick = { showDetail = true },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 16.dp)
+                                .height(80.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                        ) {
+                            Text(
+                                text = "Study cards",
+                                fontSize = 25.sp,
+                                fontWeight = FontWeight.Normal
+                            )
+                        }
                     }
                 }
 
-                Button(
-                    onClick = { showDetail = true },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp)
-                        .height(80.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                ) {
-                    Text(
-                        text = "Study cards",
-                        fontSize = 25.sp,
-                        fontWeight = FontWeight.Normal
-                    )
-                }
-                Text(
-                    text = "Cards in deck",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Normal,
-                    modifier = Modifier.padding(16.dp, bottom = 0.dp)
-                )
-                CustomThumbSlider(5, 10)
-
-                LazyColumn {
-                    items(words) { word ->
-                        FlashCardScreen(word.englishWord, word.farsiWord)
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.onSurfaceVariant)
+                            .padding(16.dp)
+                    ) {
+                        Text(
+                            text = "Cards in deck",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Normal,
+                            modifier = Modifier.padding(16.dp, bottom = 0.dp)
+                        )
+                        CustomThumbSlider(5, 10)
                     }
+                }
+
+                items(words) { word ->
+                    FlashCardScreen(word.englishWord, word.farsiWord)
                 }
             }
         }
@@ -287,7 +315,7 @@ fun CustomCircularProgress(
 
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier.size(130.dp)
+        modifier = modifier.size(150.dp)
     ) {
         CircularProgressIndicator(
             progress = progress, // مقدار انیمیشن شده
@@ -301,7 +329,7 @@ fun CustomCircularProgress(
         Text(
             text = displayNumber.toString(),
             style = TextStyle(
-                fontSize = 24.sp,
+                fontSize = 30.sp,
                 color = textColor
             )
         )
@@ -313,7 +341,9 @@ fun CustomCircularProgress(
 private fun StatusColumn(
     count: String,
     label: String,
-    iconTint: Color
+    iconTint: Color,
+    icon: Painter,  // آیکون به‌عنوان ورودی
+    sizeIcon: Dp
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -329,9 +359,9 @@ private fun StatusColumn(
                 fontWeight = FontWeight.Normal
             )
             Icon(
-                painter = painterResource(R.drawable.cap),
+                painter = icon,
                 contentDescription = "cap",
-                modifier = Modifier.size(40.dp),
+                modifier = Modifier.size(sizeIcon),
                 tint = iconTint
             )
         }
@@ -384,7 +414,7 @@ fun CustomThumbSlider(
             trackColor = Color.Gray.copy(alpha = 0.2f), // رنگ پس‌زمینه پروگرس بار
             color = MaterialTheme.colorScheme.primary // رنگ پروگرس
         )
-        Spacer(Modifier.requiredHeight(30.dp))
+        //Spacer(Modifier.requiredHeight(30.dp))
         Row(
             modifier = Modifier
                 .fillMaxWidth()

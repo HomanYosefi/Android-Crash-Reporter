@@ -27,7 +27,9 @@ fun Search() {
     var query by remember { mutableStateOf("") }
     var expanded by rememberSaveable { mutableStateOf(false) }
 
-    Box(modifier = Modifier.fillMaxSize().semantics { isTraversalGroup = true }) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .semantics { isTraversalGroup = true }) {
         SearchBar(
             modifier = Modifier
                 .align(Alignment.TopCenter)
@@ -35,7 +37,12 @@ fun Search() {
             query = query,
             onQueryChange = { query = it },
             onSearch = { expanded = false },
-            placeholder = { Text("Search grammar") },
+            placeholder = {
+                Text(
+                    "Search grammar",
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            },
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
             trailingIcon = {
                 //HambergeryEdit(onClick = { expanded = false })

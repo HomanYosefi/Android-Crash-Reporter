@@ -25,7 +25,10 @@ private val LightColors = lightColorScheme(
     surface = Color.White,
     onSurface = AnkiBlack,
     error = AnkiRed,
-    onError = Color.White
+    onError = Color.White,
+    surfaceVariant = Color.White,
+    onSurfaceVariant = untherJetWhite,
+    scrim = untherJetWhite
 )
 
 // Dark theme colors
@@ -43,7 +46,10 @@ private val DarkColors = darkColorScheme(
     surface = AnkiBlack,
     onSurface = Color.White,
     error = AnkiRed,
-    onError = AnkiBlack
+    onError = AnkiBlack,
+    surfaceVariant = jetBlack,
+    onSurfaceVariant = untherJetBlack,
+    scrim = boxReviewColor
 )
 
 // تعریف تایپوگرافی
@@ -71,6 +77,12 @@ private val AppTypography = Typography(
     labelMedium = TextStyle(
         fontWeight = FontWeight.SemiBold,
         fontSize = 12.sp,
+        letterSpacing = 0.5.sp
+    ),
+    bodyMedium = TextStyle(
+        fontWeight = FontWeight.Medium,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
         letterSpacing = 0.5.sp
     )
 )
