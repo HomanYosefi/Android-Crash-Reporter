@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Share
@@ -27,6 +28,15 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.leitner.R
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import kotlin.Float
 
 data class WordItem(
     val id: Int,
@@ -178,6 +188,13 @@ fun ListDetailGrammarScreen(
                         fontWeight = FontWeight.Normal
                     )
                 }
+                Text(
+                    text = "Cards in deck",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Normal,
+                    modifier = Modifier.padding(16.dp, bottom = 0.dp)
+                )
+                CustomThumbSlider(5, 10)
 
                 LazyColumn {
                     items(words) { word ->
@@ -292,7 +309,6 @@ fun CustomCircularProgress(
 }
 
 
-
 @Composable
 private fun StatusColumn(
     count: String,
@@ -325,5 +341,89 @@ private fun StatusColumn(
             fontWeight = FontWeight.Normal
         )
 
+    }
+}
+
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun CustomThumbSlider(
+    reviewWords: Int,
+    wholeWords: Int
+) {
+    // محاسبه درصد نهایی
+    val targetProgress = remember(reviewWords, wholeWords) {
+        if (wholeWords != 0) reviewWords.toFloat() / wholeWords.toFloat() else 0f
+    }
+
+    // مقدار اولیه برای انیمیشن از صفر
+    var currentProgress by remember { mutableFloatStateOf(0f) }
+
+    // انیمیشن از صفر تا مقدار هدف با تنظیمات سفارشی
+    val animatedProgress by animateFloatAsState(
+        targetValue = currentProgress,
+        animationSpec = tween(
+            durationMillis = 1000, // مدت زمان انیمیشن
+            easing = FastOutSlowInEasing // نوع حرکت انیمیشن
+        )
+    )
+
+    // شروع انیمیشن وقتی کامپوننت ایجاد میشه
+    LaunchedEffect(targetProgress) {
+        currentProgress = targetProgress
+    }
+
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        LinearProgressIndicator(
+            progress = { animatedProgress },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .height(14.dp)
+                .clip(RoundedCornerShape(4.dp)),
+            trackColor = Color.Gray.copy(alpha = 0.2f), // رنگ پس‌زمینه پروگرس بار
+            color = MaterialTheme.colorScheme.primary // رنگ پروگرس
+        )
+        Spacer(Modifier.requiredHeight(30.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween // فاصله‌گذاری بهتر
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(16.dp)
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(Color.Gray.copy(alpha = 0.2f))
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "$wholeWords Not studied",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+
+            Row(
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(16.dp)
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(MaterialTheme.colorScheme.primary)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = "$reviewWords To review",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+        }
     }
 }
