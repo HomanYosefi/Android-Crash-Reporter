@@ -84,9 +84,9 @@ fun ChapterItem(
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = "$wordsCount words · ${(progress * 100).toInt()}% completed",
+                        text = "$wordsCount کلمه · ${(progress * 100).toInt()}% تکمیل شده",
                         style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onBackground
+                        color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
                     )
                 }
             },
@@ -141,7 +141,7 @@ fun ChapterItem(
             }
         )
         HorizontalDivider(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth().offset(8.dp),
             color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
             thickness = 1.dp
         )

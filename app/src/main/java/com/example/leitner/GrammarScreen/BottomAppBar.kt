@@ -21,6 +21,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -134,12 +135,12 @@ private fun ScrollToTopButton(onClick: () -> Unit) {
 private fun AddButton(onClick: () -> Unit) {
     FloatingActionButton(
         onClick = onClick,
-        containerColor = MaterialTheme.colorScheme.secondary
+        containerColor = MaterialTheme.colorScheme.primary
     ) {
         Icon(
             Icons.Filled.Add,
             contentDescription = "Add item",
-            tint = MaterialTheme.colorScheme.onSurface
+            tint = MaterialTheme.colorScheme.onPrimary
         )
     }
 }
@@ -216,22 +217,33 @@ private fun GrammarTopAppBar(
     onEditModeToggle: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior
 ) {
-    TopAppBar(
-        title = { Text("جعبه لایتنر") },
-        actions = {
-            IconButton(onClick = onEditModeToggle) {
-                Icon(
-                    imageVector = Icons.Default.Edit,
-                    contentDescription = if (isEditMode) "پایان ویرایش" else "شروع ویرایش"
-                )
-            }
-        },
-        scrollBehavior = scrollBehavior,
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.secondary,
-            titleContentColor = MaterialTheme.colorScheme.onSurface
+    Column {
+        TopAppBar(
+            title = { Text("جعبه لایتنر") },
+            actions = {
+                IconButton(onClick = onEditModeToggle) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = if (isEditMode) "پایان ویرایش" else "شروع ویرایش"
+                    )
+                }
+            },
+            scrollBehavior = scrollBehavior,
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = Color.Transparent,
+                scrolledContainerColor = Color.Transparent, // رنگ پس‌زمینه در حالت اسکرول
+                navigationIconContentColor = MaterialTheme.colorScheme.onBackground, // رنگ آیکون‌های navigation
+                titleContentColor = MaterialTheme.colorScheme.onBackground,
+                actionIconContentColor = MaterialTheme.colorScheme.onBackground // رنگ آیکون‌های action
+            )
         )
-    )
+        HorizontalDivider(
+            modifier = Modifier.fillMaxWidth(),
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
+            thickness = 1.dp
+        )
+    }
+
 }
 
 @Composable

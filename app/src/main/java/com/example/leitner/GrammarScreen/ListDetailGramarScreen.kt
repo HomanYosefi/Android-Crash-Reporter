@@ -85,46 +85,56 @@ fun ListDetailGrammarScreen(
         Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
-                TopAppBar(
-                    title = { },
-                    navigationIcon = {
-                        Row(
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            IconButton(onClick = { navController.navigateUp() }) {
-                                Icon(
-                                    imageVector = Icons.Default.ArrowBack,
-                                    contentDescription = "برگشت"
-                                )
+                Column {
+                    TopAppBar(
+                        title = { },
+                        navigationIcon = {
+                            Row(
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                IconButton(onClick = { navController.navigateUp() }) {
+                                    Icon(
+                                        imageVector = Icons.Default.ArrowBack,
+                                        contentDescription = "برگشت"
+                                    )
+                                }
+                                Spacer(modifier = Modifier.weight(1f))
+                                IconButton(onClick = { }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Search,
+                                        contentDescription = "search"
+                                    )
+                                }
+                                IconButton(onClick = { }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Share,
+                                        contentDescription = "share"
+                                    )
+                                }
                             }
-                            Spacer(modifier = Modifier.weight(1f))
-                            IconButton(onClick = { }) {
-                                Icon(
-                                    imageVector = Icons.Default.Search,
-                                    contentDescription = "search"
-                                )
-                            }
-                            IconButton(onClick = { }) {
-                                Icon(
-                                    imageVector = Icons.Default.Share,
-                                    contentDescription = "share"
-                                )
-                            }
-                        }
-                    },
-                    scrollBehavior = scrollBehavior,
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.secondary,
-                        titleContentColor = MaterialTheme.colorScheme.onSurface
+                        },
+                        scrollBehavior = scrollBehavior,
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                            scrolledContainerColor = Color.Transparent, // رنگ پس‌زمینه در حالت اسکرول
+                            navigationIconContentColor = MaterialTheme.colorScheme.onBackground, // رنگ آیکون‌های navigation
+                            titleContentColor = MaterialTheme.colorScheme.onBackground,
+                            actionIconContentColor = MaterialTheme.colorScheme.onBackground // رنگ آیکون‌های action
+                        )
                     )
-                )
+                    HorizontalDivider(
+                        modifier = Modifier.fillMaxWidth(),
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+                        thickness = 1.dp
+                    )
+                }
+
             }
         ) { paddingValues ->
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.onSurfaceVariant)
-
                     .padding(paddingValues)
             ) {
                 item {
@@ -144,7 +154,7 @@ fun ListDetailGrammarScreen(
                         )
 
                         Text(
-                            text = "Cards for today",
+                            text = "کارت های امروز",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Normal,
                             modifier = Modifier.padding(16.dp)
@@ -176,7 +186,7 @@ fun ListDetailGrammarScreen(
                             ) {
                                 StatusColumn(
                                     count = "0",
-                                    label = "To review",
+                                    label = "مرور کردن",
                                     iconTint = Color.Green,
                                     painterResource(R.drawable.cap),
                                     40.dp
@@ -184,7 +194,7 @@ fun ListDetailGrammarScreen(
 
                                 StatusColumn(
                                     count = "10",
-                                    label = "Not Studied",
+                                    label = "مطالعه نشده",
                                     iconTint = MaterialTheme.colorScheme.onBackground,
                                     painterResource(R.drawable.add),
                                     25.dp
@@ -201,7 +211,7 @@ fun ListDetailGrammarScreen(
                                 .clip(RoundedCornerShape(10.dp))
                         ) {
                             Text(
-                                text = "Study cards",
+                                text = "مرور کارت های امروز",
                                 fontSize = 25.sp,
                                 fontWeight = FontWeight.Normal
                             )
@@ -217,7 +227,7 @@ fun ListDetailGrammarScreen(
                             .padding(16.dp)
                     ) {
                         Text(
-                            text = "Cards in deck",
+                            text = "کارت های موجود",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Normal,
                             modifier = Modifier.padding(16.dp, bottom = 0.dp)
@@ -253,7 +263,6 @@ fun ListDetailGrammarScreen(
             Scaffold(
                 topBar = {
                     TopAppBar(
-                        title = { Text("جزئیات") },
                         navigationIcon = {
                             IconButton(onClick = { showDetail = false }) {
                                 Icon(
@@ -262,6 +271,7 @@ fun ListDetailGrammarScreen(
                                 )
                             }
                         },
+                        title = { Text("") },
                         colors = TopAppBarDefaults.topAppBarColors(
                             containerColor = MaterialTheme.colorScheme.secondary,
                             titleContentColor = MaterialTheme.colorScheme.onSurface
@@ -276,10 +286,6 @@ fun ListDetailGrammarScreen(
                         .padding(innerPadding)
                         .padding(16.dp)
                 ) {
-//                    Text(
-//                        text = "سلام",
-//                        style = MaterialTheme.typography.headlineLarge
-//                    )
                     FlashCardScreen("hello", "سلام")
                 }
             }
@@ -430,7 +436,7 @@ fun CustomThumbSlider(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "$wholeWords Not studied",
+                    text = "$wholeWords مطالعه نشده",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Normal,
                     color = MaterialTheme.colorScheme.onSurface
@@ -448,7 +454,7 @@ fun CustomThumbSlider(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = "$reviewWords To review",
+                    text = "$reviewWords برای مرور",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Normal,
                     color = MaterialTheme.colorScheme.onSurface

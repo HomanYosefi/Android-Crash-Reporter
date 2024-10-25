@@ -65,7 +65,7 @@ fun CustomDropdownMenu(
             DropdownMenuItem(
                 text = {
                     Text(
-                        text = "Edit",
+                        text = "ویرایش",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Normal,
                         color = MaterialTheme.colorScheme.onSurface
@@ -89,7 +89,7 @@ fun CustomDropdownMenu(
             DropdownMenuItem(
                 text = {
                     Text(
-                        text = "Settings",
+                        text = "تنظیمات",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Normal,
                         color = MaterialTheme.colorScheme.onSurface
@@ -118,7 +118,7 @@ fun CustomDropdownMenu(
             DropdownMenuItem(
                 text = {
                     Text(
-                        text = "Send Feedback",
+                        text = "ارسال بازخورد",
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Normal,
                         color = MaterialTheme.colorScheme.onSurface

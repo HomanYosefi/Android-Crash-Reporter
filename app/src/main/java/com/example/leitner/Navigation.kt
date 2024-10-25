@@ -31,7 +31,7 @@ sealed class NavigationItems(var screen_route: String) {
 
 @Composable
 fun NavigationGraph(navController: NavHostController) {
-    NavHost(navController, startDestination = BottomNavItem.home.screen_route) {
+    NavHost(navController, startDestination = BottomNavItem.grammar.screen_route) {
         composable(BottomNavItem.home.screen_route) {
             Home(navController)
         }

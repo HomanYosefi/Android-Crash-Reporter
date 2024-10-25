@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -51,9 +52,8 @@ fun ButtonNav(navController: NavController) {
     NavigationBar(
         modifier = Modifier
             .fillMaxWidth()
-            .height(70.dp)
-            .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp)),
-        containerColor = MaterialTheme.colorScheme.secondary
+            .height(65.dp),
+        containerColor = Color.Transparent
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
@@ -64,7 +64,7 @@ fun ButtonNav(navController: NavController) {
                     Icon(
                         painter = painterResource(id = item.icon),
                         contentDescription = null,
-                        modifier = Modifier.size(24.dp)
+                        modifier = Modifier.size(24.dp).offset(y = 4.dp)
                     )
                 },
                 label = {
@@ -86,11 +86,16 @@ fun ButtonNav(navController: NavController) {
                 },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = MaterialTheme.colorScheme.primary,
-                    unselectedIconColor = MaterialTheme.colorScheme.onSurface,
+                    unselectedIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f),
                     selectedTextColor = MaterialTheme.colorScheme.primary,
-                    unselectedTextColor = MaterialTheme.colorScheme.onSurface
+                    unselectedTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                 )
             )
         }
     }
+    HorizontalDivider(
+        modifier = Modifier.fillMaxWidth(),
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f),
+        thickness = 1.dp
+    )
 }

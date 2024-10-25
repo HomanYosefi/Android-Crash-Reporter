@@ -1,29 +1,31 @@
 package com.example.leitner
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
-import com.example.leitner.ui.theme.LeitnerTheme
 import dagger.hilt.android.AndroidEntryPoint
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.unit.LayoutDirection
 
-//import com.example.leitner.ui.theme.LeitnerTheme
 @AndroidEntryPoint
-
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.decorView.layoutDirection = View.LAYOUT_DIRECTION_RTL
+
         setContent {
             val navController = rememberNavController()
-            MainScreen(navController)
+            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
+
+                MainScreen(navController)
 
 
+            }
         }
     }
 }
+
+

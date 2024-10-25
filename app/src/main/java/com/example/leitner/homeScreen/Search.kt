@@ -39,8 +39,8 @@ fun Search() {
             onSearch = { expanded = false },
             placeholder = {
                 Text(
-                    "Search grammar",
-                    color = MaterialTheme.colorScheme.onBackground
+                    "جستجو گرامر",
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
                 )
             },
             leadingIcon = { Icon(Icons.Default.Search, contentDescription = null) },
@@ -55,7 +55,7 @@ fun Search() {
             active = expanded,
             onActiveChange = { expanded = it },
             colors = SearchBarDefaults.colors(
-                containerColor = MaterialTheme.colorScheme.secondary
+                containerColor = MaterialTheme.colorScheme.primaryContainer
             )
         ) {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
@@ -63,7 +63,12 @@ fun Search() {
                     val resultText = "Suggestion $idx"
                     ListItem(
                         headlineContent = { Text(resultText) },
-                        supportingContent = { Text("Additional info") },
+                        supportingContent = {
+                            Text(
+                                "اطلاعات اضافی",
+                                color = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        },
                         leadingContent = { Icon(Icons.Filled.Star, contentDescription = null) },
                         colors = ListItemDefaults.colors(containerColor = Color.Transparent),
                         modifier = Modifier
