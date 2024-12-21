@@ -1,6 +1,12 @@
 package com.example.leitner.GrammarScreen
 
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
+import android.provider.MediaStore
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,12 +18,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.FloatingActionButton
@@ -43,11 +51,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.example.leitner.ui.theme.iranyekanmobile
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
+import android.Manifest
+import android.content.pm.PackageManager
+import android.provider.OpenableColumns
+import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.compose.runtime.*
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,12 +90,12 @@ fun GrammarScreen(
 
     Box(modifier = modifier.padding(bottom = paddingValues)) {
         Scaffold(
-            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+            //modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
                 GrammarTopAppBar(
                     isEditMode = state.isEditMode,
                     onEditModeToggle = onEditModeToggle,
-                    scrollBehavior = scrollBehavior
+                    //scrollBehavior =
                 )
             }
         ) { innerPadding ->
@@ -157,22 +174,30 @@ private fun AddGrammarContent(
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            //.height(600.dp)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Add New Grammar",
+            text = "اضافه کردن گرامر جدید",
             style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(bottom = 16.dp)
         )
 
-        val titles = listOf("Create", "Import")
+        val titles = listOf("ایجاد", "وارد کردن")
         TabRow(selectedTabIndex = currentTabIndex) {
             titles.forEachIndexed { index, title ->
                 Tab(
                     selected = currentTabIndex == index,
                     onClick = { onTabChange(index) },
-                    text = { Text(title) }
+                    text = {
+                        Text(
+                            title,
+                            fontFamily = iranyekanmobile,
+                            color = if (currentTabIndex == index) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                 )
             }
         }
@@ -181,30 +206,165 @@ private fun AddGrammarContent(
             OutlinedTextField(
                 value = textFieldValue,
                 onValueChange = onTextFieldChange,
-                label = { Text("Enter text") },
+                label = {
+                    Text(
+                        "نام فصل جدید را وارد کنید",
+                        fontFamily = iranyekanmobile,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                    )
+                },
                 isError = isTextFieldError,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 16.dp)
+                    .padding(vertical = 16.dp),
+                shape = RoundedCornerShape(28.dp)
             )
 
             if (isTextFieldError) {
                 Text(
-                    text = "Text must be 20 characters or less",
+                    text = "متن باید ۲۰ کاراکتر یا کمتر باشد.",
+                    fontFamily = iranyekanmobile,
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodySmall
                 )
             }
+            val context = LocalContext.current
+
+// وضعیت ذخیره URI عکس
+            val imageUri = remember { mutableStateOf<Uri?>(null) }
+
+// لانچر برای باز کردن گالری
+            val galleryLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.GetContent()
+            ) { uri: Uri? ->
+                if (uri != null) {
+                    imageUri.value = uri
+                    Toast.makeText(context, "عکس انتخاب شد", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+// لانچر برای درخواست مجوز
+            val permissionLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.RequestPermission()
+            ) { isGranted ->
+                if (isGranted) {
+                    galleryLauncher.launch("image/*")  // باز کردن گالری اگر مجوز داده شد
+                } else {
+                    Toast.makeText(context, "مجوز دسترسی به گالری رد شد", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+// بررسی و درخواست مجوز بر اساس نسخه API
+            Button(
+                onClick = {
+                    when {
+                        ContextCompat.checkSelfPermission(
+                            context,
+                            Manifest.permission.READ_MEDIA_IMAGES
+                        ) == PackageManager.PERMISSION_GRANTED ||
+                                ContextCompat.checkSelfPermission(
+                                    context,
+                                    Manifest.permission.READ_EXTERNAL_STORAGE
+                                ) == PackageManager.PERMISSION_GRANTED -> {
+                            // اگر مجوز قبلاً داده شده، گالری را باز کن
+                            galleryLauncher.launch("image/*")
+                        }
+
+                        else -> {
+                            // درخواست مجوز بر اساس نسخه API
+                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                                permissionLauncher.launch(Manifest.permission.READ_MEDIA_IMAGES)
+                            } else {
+                                permissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                            }
+                        }
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp)
+                    .height(60.dp),
+                colors = ButtonDefaults.buttonColors(MaterialTheme.colorScheme.primaryContainer),
+                shape = RoundedCornerShape(28.dp)
+            ) {
+                Text(
+                    text = "انتخاب عکس از گالری",
+                    fontFamily = iranyekanmobile,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+            Button(
+                onClick = onSave,
+                enabled = textFieldValue.isNotBlank(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp)
+                    .height(60.dp),
+                colors = ButtonDefaults.buttonColors(
+                    MaterialTheme.colorScheme.primaryContainer
+                ),
+                shape = RoundedCornerShape(28.dp)
+            ) {
+                Text(
+                    "ذخیره",
+                    fontFamily = iranyekanmobile,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
+
+        }
+        if (currentTabIndex == 1) {
+            val context = LocalContext.current
+
+            // وضعیت ذخیره URI فایل انتخاب شده
+            var selectedFileName by remember { mutableStateOf<String?>(null) }
+
+            // لانچر برای باز کردن فایل منیجر و انتخاب فایل
+            val fileLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.OpenDocument()
+            ) { uri: Uri? ->
+                if (uri != null) {
+                    selectedFileName = getFileName(context, uri)  // گرفتن نام فایل انتخاب شده
+                    Toast.makeText(context, "فایل انتخاب شد: $selectedFileName", Toast.LENGTH_SHORT)
+                        .show()
+                } else {
+                    Toast.makeText(context, "هیچ فایلی انتخاب نشد", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            // دکمه برای باز کردن فایل منیجر
+            Button(
+                onClick = {
+                    // فیلتر کردن نوع فایل‌ها (در اینجا تمام فایل‌ها مجاز هستند: "*/*")
+                    fileLauncher.launch(arrayOf("*/*"))
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp)
+                    .height(60.dp)
+                    ,
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = Color.Black
+                )
+            ) {
+                Text("انتخاب فایل")
+            }
+
+            // نمایش نام فایل انتخاب شده (در صورت وجود)
+//            selectedFileName?.let {
+//                Text(
+//                    text = "فایل انتخاب شده: $it",
+//                    modifier = Modifier.padding(8.dp),
+//                    color = MaterialTheme.colorScheme.onSurface
+//                )
+//            }
+
         }
 
-        Button(
-            onClick = onSave,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp)
-        ) {
-            Text("Save")
-        }
+
+
+
 
         Spacer(modifier = Modifier.height(32.dp))
     }
@@ -215,23 +375,23 @@ private fun AddGrammarContent(
 private fun GrammarTopAppBar(
     isEditMode: Boolean,
     onEditModeToggle: () -> Unit,
-    scrollBehavior: TopAppBarScrollBehavior
+    //scrollBehavior: TopAppBarScrollBehavior
 ) {
     Column {
         TopAppBar(
             title = { Text("جعبه لایتنر") },
             actions = {
-                IconButton(onClick = onEditModeToggle) {
+                IconButton( onClick = {/*onEditModeToggle*/ }) {
                     Icon(
                         imageVector = Icons.Default.Edit,
                         contentDescription = if (isEditMode) "پایان ویرایش" else "شروع ویرایش"
                     )
                 }
             },
-            scrollBehavior = scrollBehavior,
+            //scrollBehavior = scrollBehavior,
             colors = TopAppBarDefaults.topAppBarColors(
                 containerColor = Color.Transparent,
-                scrolledContainerColor = Color.Transparent, // رنگ پس‌زمینه در حالت اسکرول
+                //scrolledContainerColor = Color.Transparent, // رنگ پس‌زمینه در حالت اسکرول
                 navigationIconContentColor = MaterialTheme.colorScheme.onBackground, // رنگ آیکون‌های navigation
                 titleContentColor = MaterialTheme.colorScheme.onBackground,
                 actionIconContentColor = MaterialTheme.colorScheme.onBackground // رنگ آیکون‌های action
@@ -244,6 +404,18 @@ private fun GrammarTopAppBar(
         )
     }
 
+}
+
+
+private fun getFileName(context: android.content.Context, uri: Uri): String? {
+    val cursor = context.contentResolver.query(uri, null, null, null, null)
+    cursor?.use {
+        if (it.moveToFirst()) {
+            val nameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            if (nameIndex >= 0) return it.getString(nameIndex)
+        }
+    }
+    return null
 }
 
 @Composable

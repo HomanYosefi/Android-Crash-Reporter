@@ -6,6 +6,6 @@ import androidx.navigation.NavHostController
 
 @Composable
 fun Home(navController: NavHostController) {
-    Search()
+    //Search()
     Box(){}
 }
